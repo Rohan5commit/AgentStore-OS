@@ -43,3 +43,15 @@ npm run build
 
 ## Deployment
 - Production URL (current): `https://agentstore-os.vercel.app`
+
+
+## Limitations + next steps
+- Current Locus implementation is mock-mode first for hackathon reliability; next step is signed webhook validation and live settlement checks.
+- Current tests cover core transition logic and order API behavior; next step is browser E2E for full click-path automation.
+
+## Demo reset
+```bash
+rm -rf .data
+npm run dev
+```
+This resets businesses/services/orders to seeded defaults.
