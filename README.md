@@ -1,19 +1,14 @@
 # AgentStore OS
 
-AgentStore OS is an AI-native storefront for building a digital business with agentic payments.
+AgentStore OS is an AI-native storefront for building a digital business with Locus-centered agentic payments.
 
-## Features
-- Business/service storefront for paid digital services.
-- Locus-centric payment abstraction and checkout UX.
-- AI fulfillment via NVIDIA NIM (with reliable fallback mode).
-- Orders dashboard with payment status, fulfillment status, and revenue.
-- Seeded demo businesses and services for immediate pitch/demo.
-
-## Repo Tree
-- `src/app` pages + API routes
-- `src/lib` payment and AI abstractions
-- `src/data` seed templates
-- Submission docs in root markdown files
+## What works end-to-end
+- Owner creates a business from UI.
+- Owner creates paid services from UI.
+- Customer buys service via Locus-mode checkout and returns through callback/return UX.
+- Payment status transitions are visible (`pending -> processing -> paid`).
+- Paid order triggers AI fulfillment output.
+- Revenue and order counts update in dashboard.
 
 ## Quickstart
 ```bash
@@ -21,26 +16,30 @@ npm install
 cp .env.example .env
 npm run dev
 ```
-Open `http://localhost:3000`
+Open `http://localhost:3000`.
 
-## Environment
-- `NVIDIA_NIM_API_KEY` for AI fulfillment
-- `LOCUS_API_KEY` reserved for Locus integration
-- `LOCUS_MOCK_MODE=true` for deterministic hackathon demo
-
-## Deployment (Vercel)
+## Run tests
 ```bash
-npm i -g vercel
-vercel login
-vercel --prod
+npm run test
+npm run build
 ```
-Set environment variables in Vercel project settings:
-- `NVIDIA_NIM_API_KEY`
-- `LOCUS_API_KEY`
-- `LOCUS_MOCK_MODE`
 
-## Demo path
-1. Go to dashboard.
-2. Select a seeded service.
-3. Submit checkout.
-4. View paid order and generated deliverable in Orders.
+## Exact demo flow (reproducible)
+1. Go to `/onboarding`, create a business.
+2. Go to `/dashboard`, create a service under that business.
+3. Click **Buy with Locus** on any service.
+4. Enter email/notes and click **Pay with Locus**.
+5. On `/checkout/success`, click **Confirm Payment + Fulfill**.
+6. Go to `/orders` and verify:
+   - payment status = `paid`
+   - fulfillment status = `completed`
+   - deliverable text appears
+   - revenue increased.
+
+## Environment variables
+- `NVIDIA_NIM_API_KEY` (optional for live AI output)
+- `LOCUS_API_KEY` (reserved for live Locus integration)
+- `LOCUS_MOCK_MODE=true` (recommended for demo)
+
+## Deployment
+- Production URL (current): `https://agentstore-os.vercel.app`

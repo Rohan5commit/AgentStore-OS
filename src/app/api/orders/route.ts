@@ -2,6 +2,7 @@ import { generateDeliverable } from "@/lib/ai";
 import { createLocusPaymentIntent } from "@/lib/locus";
 import { db, saveStore } from "@/lib/store";
 import { NextResponse } from "next/server";
+import { nextFulfillmentStatus } from "@/lib/order-state";
 import { z } from "zod";
 
 const schema = z.object({ serviceId: z.string(), customerEmail: z.string().email(), notes: z.string().default("") });
@@ -50,7 +51,7 @@ export async function PATCH(req: Request) {
   }
 
   if (paymentStatus === "paid") {
-    order.fulfillmentStatus = "in_progress";
+    order.fulfillmentStatus = nextFulfillmentStatus("paid", order.fulfillmentStatus);
     const service = db.services.find((s) => s.id === order.serviceId);
     try {
       order.deliverable = await generateDeliverable(service?.name ?? "Service", order.notes);

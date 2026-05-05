@@ -1,7 +1,9 @@
-# Demo Script (5-7 minutes)
-1. Open landing page: explain AI-native business OS.
-2. Open dashboard: show seeded services (resume review, competitor research, marketing copy).
-3. Open checkout for one service and submit customer request.
-4. Confirm order appears with payment=paid and fulfillment=completed.
-5. Open orders dashboard and show revenue increment + generated deliverable.
-6. Close with why Locus payment primitives unlock autonomous microbusiness workflows.
+# AgentStore OS Demo Script (Judge-ready)
+
+1. Open landing page and pitch in one sentence: "Create business, sell AI services, get paid through Locus, auto-fulfill with agents." 
+2. Open `/onboarding`, create a new business live.
+3. Open `/dashboard`, create a paid service live.
+4. Buy the service through **Pay with Locus**.
+5. On Locus return page (`/checkout/success`), confirm payment.
+6. Open `/orders` and show payment paid, fulfillment completed, generated deliverable, and updated revenue.
+7. Close with: "This is a functioning microbusiness loop powered by Locus + AI agents."
