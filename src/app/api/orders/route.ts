@@ -1,14 +1,10 @@
 import { generateDeliverable } from "@/lib/ai";
 import { createLocusPaymentIntent } from "@/lib/locus";
-import { db } from "@/lib/store";
+import { db, saveStore } from "@/lib/store";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-const schema = z.object({
-  serviceId: z.string(),
-  customerEmail: z.string().email(),
-  notes: z.string().default("")
-});
+const schema = z.object({ serviceId: z.string(), customerEmail: z.string().email(), notes: z.string().default("") });
 
 export async function GET() {
   return NextResponse.json(db.orders);
@@ -21,6 +17,7 @@ export async function POST(req: Request) {
 
   const orderId = `o${Date.now()}`;
   const payment = await createLocusPaymentIntent(service.priceUsd, orderId);
+  const now = new Date().toISOString();
   const order = {
     id: orderId,
     serviceId: service.id,
@@ -30,10 +27,12 @@ export async function POST(req: Request) {
     paymentStatus: "pending" as const,
     fulfillmentStatus: "queued" as const,
     paymentRef: payment.paymentRef,
-    createdAt: new Date().toISOString()
+    checkoutUrl: payment.checkoutUrl,
+    createdAt: now,
+    updatedAt: now
   };
   db.orders.push(order);
-
+  saveStore();
   return NextResponse.json({ order, payment });
 }
 
@@ -43,12 +42,28 @@ export async function PATCH(req: Request) {
   if (!order) return NextResponse.json({ error: "Order not found" }, { status: 404 });
 
   order.paymentStatus = paymentStatus;
+  order.updatedAt = new Date().toISOString();
+
+  if (paymentStatus === "processing") {
+    saveStore();
+    return NextResponse.json(order);
+  }
+
   if (paymentStatus === "paid") {
     order.fulfillmentStatus = "in_progress";
     const service = db.services.find((s) => s.id === order.serviceId);
-    order.deliverable = await generateDeliverable(service?.name ?? "Service", order.notes);
-    order.fulfillmentStatus = "completed";
+    try {
+      order.deliverable = await generateDeliverable(service?.name ?? "Service", order.notes);
+      order.fulfillmentStatus = "completed";
+    } catch {
+      order.fulfillmentStatus = "failed";
+    }
   }
 
+  if (paymentStatus === "failed") {
+    order.fulfillmentStatus = "failed";
+  }
+
+  saveStore();
   return NextResponse.json(order);
 }

@@ -3,6 +3,7 @@ export type Business = {
   name: string;
   tagline: string;
   owner: string;
+  createdAt: string;
 };
 
 export type Service = {
@@ -14,8 +15,8 @@ export type Service = {
   priceUsd: number;
 };
 
-export type PaymentStatus = "pending" | "paid" | "failed";
-export type FulfillmentStatus = "queued" | "in_progress" | "completed";
+export type PaymentStatus = "pending" | "processing" | "paid" | "failed";
+export type FulfillmentStatus = "queued" | "in_progress" | "completed" | "failed";
 
 export type Order = {
   id: string;
@@ -26,6 +27,14 @@ export type Order = {
   paymentStatus: PaymentStatus;
   fulfillmentStatus: FulfillmentStatus;
   paymentRef: string;
+  checkoutUrl?: string;
   deliverable?: string;
   createdAt: string;
+  updatedAt: string;
+};
+
+export type StoreData = {
+  businesses: Business[];
+  services: Service[];
+  orders: Order[];
 };
